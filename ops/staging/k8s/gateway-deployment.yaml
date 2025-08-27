@@ -1,0 +1,136 @@
+# Created automatically by Cursor AI (2024-12-19)
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rag-gateway
+  namespace: rag-staging
+  labels:
+    app: rag-gateway
+    environment: staging
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rag-gateway
+  template:
+    metadata:
+      labels:
+        app: rag-gateway
+        environment: staging
+    spec:
+      containers:
+      - name: gateway
+        image: rag-gateway:staging
+        ports:
+        - containerPort: 3000
+          name: http
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: NODE_ENV
+          value: "staging"
+        - name: PORT
+          value: "3000"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: rag-secrets
+              key: database-url
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: rag-secrets
+              key: redis-url
+        - name: NATS_URL
+          valueFrom:
+            secretKeyRef:
+              name: rag-secrets
+              key: nats-url
+        - name: S3_BUCKET
+          valueFrom:
+            secretKeyRef:
+              name: rag-secrets
+              key: s3-bucket
+        - name: S3_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: rag-secrets
+              key: s3-access-key
+        - name: S3_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: rag-secrets
+              key: s3-secret-key
+        - name: S3_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              name: rag-secrets
+              key: s3-endpoint
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: rag-secrets
+              key: jwt-secret
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: rag-secrets
+              key: openai-api-key
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: rag-secrets
+              key: sentry-dsn
+        - name: PROMETHEUS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: rag-config
+              key: prometheus-url
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: tmp
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rag-gateway
+  namespace: rag-staging
+  labels:
+    app: rag-gateway
+    environment: staging
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3000
+    targetPort: 3000
+    protocol: TCP
+    name: http
+  - port: 9090
+    targetPort: 9090
+    protocol: TCP
+    name: metrics
+  selector:
+    app: rag-gateway

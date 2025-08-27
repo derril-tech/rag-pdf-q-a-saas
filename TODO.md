@@ -1,0 +1,85 @@
+# Task List — RAG PDF Q&A SaaS
+
+- [x] Scaffold monorepo: apps/frontend (Next.js), apps/gateway (NestJS), apps/workers (Python), packages/contracts, packages/sdk-js
+- [x] Add PLAN.md, TODO.md, ARCH.md, DECISIONS.log, DONE.md
+- [x] Add `.cursor/rules/*`
+- [x] Create `.env.example` templates for FE, gateway, workers
+- [x] Setup GitHub Actions: lint, typecheck, unit tests, docker build, scan, sign, deploy
+- [x] Setup docker-compose for local dev: Postgres 16 (+pgvector), Redis, NATS, MinIO, ClamAV
+- [x] Setup Terraform modules for DB, Redis/NATS, S3/R2, secrets, CDN
+- [x] Configure environments: dev/staging/prod
+- [x] Define Zod schemas (TS) and Pydantic models (Python) for: orgs, users, memberships, projects, documents, chunks, threads, messages, usage_stats, comments, audit_log
+- [x] Implement NestJS DTOs with OpenAPI decorators
+- [x] Create Postgres migrations for all tables
+- [x] Enforce Row-Level Security (RLS) for org/project isolation
+- [x] Add indexes: pgvector on chunks, ivfflat on embeddings
+- [x] Add constraints/invariants: chunks only after ingest, citations reference valid doc/page
+- [x] Scaffold `/v1` REST endpoints with OpenAPI 3.1
+- [x] Add middleware: Problem+JSON error handler, Idempotency-Key, Request-ID (ULID), rate limits
+- [x] Endpoints: POST /projects, POST /documents/upload-url, POST /documents, POST /documents/:id/process, GET /documents/:id, POST /threads, POST /threads/:id/messages, GET /threads/:id/messages, POST /qa, GET /threads/:id/export?format=md|json|pdf, GET /projects/:id/usage, POST /slack/install, POST /slack/events, POST /slack/ask
+- [x] ingest-worker: download file
+- [x] Run ffprobe (duration, mime check, page count)
+- [x] Virus scan (ClamAV)
+- [x] OCR detection (if scanned PDF)
+- [x] Extract text per page (pdfminer/pymupdf)
+- [x] Persist document metadata + raw storage in S3
+- [x] Split text into pre-embedding chunks
+- [x] embed-worker: semantic chunking (LangChain text splitters)
+- [x] Generate embeddings (OpenAI/local model)
+- [x] Store chunks + embeddings in Postgres pgvector
+- [x] Sync with LanceDB/FAISS if configured
+- [x] Update document status to `embedded`
+- [x] qa-worker: hybrid retrieval (vector + BM25/Elastic fallback)
+- [x] Rerank topK results
+- [x] Construct LangChain ConversationalRetrievalChain
+- [x] Generate LLM answer (Markdown + citations)
+- [x] Inject page/paragraph references into citations
+- [x] Stream response via SSE to client
+- [x] Persist user/assistant messages in threads
+- [x] Attach citations JSON to messages
+- [x] slack-worker: handle OAuth install
+- [x] Handle `/askdoc` slash command
+- [x] Process Slack events webhook
+- [x] Map org/project context
+- [x] Call QA pipeline with query
+- [x] Return snippet + link to thread
+- [x] export-worker: fetch thread + messages
+- [x] Render to Markdown
+- [x] Render to HTML/PDF
+- [x] Generate JSON bundle
+- [x] Upload artifacts to S3
+- [x] Issue signed URLs to FE
+- [x] analytics-worker: log query count, latency, tokens used
+- [x] Aggregate nightly usage stats into `usage_stats`
+- [x] Track top documents, most active projects
+- [x] Collect feedback signals (thumbs up/down, comments)
+- [x] Dashboard page: tiles for docs uploaded, threads started, queries answered, avg latency
+- [x] Project documents page: list docs, status, filters
+- [x] Upload page: presigned upload with OCR toggle + progress
+- [x] Thread chat page: chat UI, markdown render, citations panel, export button
+- [x] Analytics page: charts for queries/day, latency, token spend
+- [x] Integrations page: Slack connect card
+- [x] Components: Uploader/Dropzone, DocumentList, ThreadChat, AnswerCitation, ProjectUsage chart, SlackConnect card, Comments & Comment threads, AnalyticsDash charts
+- [x] State management: TanStack Query (server data), Zustand (UI state)
+- [x] Realtime: WS/SSE clients for chat + doc status
+- [x] SDK-JS: init client, upload doc, ask question, fetch threads
+- [x] Export formats: Markdown, HTML, PDF, JSON bundles
+- [x] Slack event contracts
+- [x] Stripe integration: usage-based billing (tokens/minutes) + seat plans
+- [x] Plan gates: enforce limits (max docs, history retention, Slack integration)
+- [x] Retention sweeps: purge docs/chunks after N days
+- [x] Audit log: record all major actions
+- [x] HIPAA toggle: stricter audit, disallow non-compliant integrations
+- [x] OTel spans across gateway + workers
+- [x] Prometheus metrics: ingest latency, QA latency, token throughput
+- [x] Grafana dashboards
+- [x] Sentry integration: capture API + worker errors
+- [x] Unit tests: chunk splitter, embed correctness, citation formatting, guardrails
+- [x] Integration tests: upload → ingest → embed → QA → thread → Slack
+- [x] Contract tests: OpenAPI schema validators; Slack payload validators
+- [x] E2E tests (Playwright): upload → ask → answer with cites → export
+- [x] Load tests: burst ingestion of 100 PDFs; concurrent QA queries
+- [x] Chaos tests: crash worker mid-ingest/QA; retry idempotency
+- [x] Security tests: RLS enforcement, PII masking, signed URL expiry
+- [x] Staging deployment run
+- [x] Production deploy with monitoring & alerting

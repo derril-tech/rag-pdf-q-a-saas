@@ -1,0 +1,81 @@
+{
+    "name": "rag-pdf-qa-saas",
+    "version": "0.1.0",
+    "description": "RAG PDF Q&A SaaS Platform",
+    "private": true,
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "scripts": {
+        "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:gateway\" \"npm run dev:workers\"",
+        "dev:frontend": "npm run dev --workspace=apps/frontend",
+        "dev:gateway": "npm run dev --workspace=apps/gateway",
+        "dev:workers": "npm run dev --workspace=apps/workers",
+        "build": "npm run build --workspaces",
+        "build:frontend": "npm run build --workspace=apps/frontend",
+        "build:gateway": "npm run build --workspace=apps/gateway",
+        "build:workers": "npm run build --workspace=apps/workers",
+        "build:contracts": "npm run build --workspace=packages/contracts",
+        "build:sdk": "npm run build --workspace=packages/sdk-js",
+        "test": "npm run test --workspaces",
+        "test:frontend": "npm run test --workspace=apps/frontend",
+        "test:gateway": "npm run test --workspace=apps/gateway",
+        "test:workers": "npm run test --workspace=apps/workers",
+        "lint": "npm run lint --workspaces",
+        "lint:frontend": "npm run lint --workspace=apps/frontend",
+        "lint:gateway": "npm run lint --workspace=apps/gateway",
+        "lint:workers": "npm run lint --workspace=apps/workers",
+        "lint:contracts": "npm run lint --workspace=packages/contracts",
+        "lint:sdk": "npm run lint --workspace=packages/sdk-js",
+        "typecheck": "npm run typecheck --workspaces",
+        "typecheck:frontend": "npm run typecheck --workspace=apps/frontend",
+        "typecheck:gateway": "npm run typecheck --workspace=apps/gateway",
+        "typecheck:contracts": "npm run typecheck --workspace=packages/contracts",
+        "typecheck:sdk": "npm run typecheck --workspace=packages/sdk-js",
+        "clean": "npm run clean --workspaces",
+        "docker:build": "docker-compose -f docker-compose.dev.yml build",
+        "docker:up": "docker-compose -f docker-compose.dev.yml up -d",
+        "docker:down": "docker-compose -f docker-compose.dev.yml down",
+        "docker:logs": "docker-compose -f docker-compose.dev.yml logs -f",
+        "db:migrate": "npm run migrate --workspace=apps/gateway",
+        "db:seed": "npm run seed --workspace=apps/gateway",
+        "infra:plan": "cd terraform && terraform plan",
+        "infra:apply": "cd terraform && terraform apply",
+        "infra:destroy": "cd terraform && terraform destroy"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.2",
+        "typescript": "^5.3.0",
+        "@types/node": "^20.10.0",
+        "eslint": "^8.55.0",
+        "@typescript-eslint/eslint-plugin": "^6.13.0",
+        "@typescript-eslint/parser": "^6.13.0",
+        "prettier": "^3.1.0",
+        "husky": "^8.0.3",
+        "lint-staged": "^15.2.0"
+    },
+    "engines": {
+        "node": ">=18.0.0",
+        "npm": ">=9.0.0"
+    },
+    "keywords": [
+        "rag",
+        "pdf",
+        "qa",
+        "saas",
+        "ai",
+        "nlp",
+        "vector-search"
+    ],
+    "author": "RAG PDF Q&A Team",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/your-org/rag-pdf-qa.git"
+    },
+    "bugs": {
+        "url": "https://github.com/your-org/rag-pdf-qa/issues"
+    },
+    "homepage": "https://github.com/your-org/rag-pdf-qa#readme"
+}

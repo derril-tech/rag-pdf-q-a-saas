@@ -1,0 +1,652 @@
+{
+    "dashboard": {
+        "id": null,
+        "title": "RAG Performance Analysis",
+        "tags": [
+            "rag",
+            "performance",
+            "latency"
+        ],
+        "style": "dark",
+        "timezone": "browser",
+        "panels": [
+            {
+                "id": 1,
+                "title": "Ingest Latency (95th percentile)",
+                "type": "timeseries",
+                "targets": [
+                    {
+                        "expr": "histogram_quantile(0.95, rate(rag_document_processing_duration_seconds_bucket{worker_type=\"ingest\"}[5m]))",
+                        "legendFormat": "95th percentile"
+                    },
+                    {
+                        "expr": "histogram_quantile(0.50, rate(rag_document_processing_duration_seconds_bucket{worker_type=\"ingest\"}[5m]))",
+                        "legendFormat": "50th percentile"
+                    }
+                ],
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "axisLabel": "",
+                            "axisPlacement": "auto",
+                            "barAlignment": 0,
+                            "drawStyle": "line",
+                            "fillOpacity": 10,
+                            "gradientMode": "none",
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "vis": false
+                            },
+                            "lineInterpolation": "linear",
+                            "lineWidth": 2,
+                            "pointSize": 5,
+                            "scaleDistribution": {
+                                "type": "linear"
+                            },
+                            "showPoints": "never",
+                            "spanNulls": false,
+                            "stacking": {
+                                "group": "A",
+                                "mode": "none"
+                            },
+                            "thresholdsStyle": {
+                                "mode": "off"
+                            }
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "yellow",
+                                    "value": 30
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 60
+                                }
+                            ]
+                        },
+                        "unit": "s"
+                    }
+                },
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            {
+                "id": 2,
+                "title": "QA Latency (95th percentile)",
+                "type": "timeseries",
+                "targets": [
+                    {
+                        "expr": "histogram_quantile(0.95, rate(rag_qa_query_duration_seconds_bucket[5m]))",
+                        "legendFormat": "95th percentile"
+                    },
+                    {
+                        "expr": "histogram_quantile(0.50, rate(rag_qa_query_duration_seconds_bucket[5m]))",
+                        "legendFormat": "50th percentile"
+                    }
+                ],
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "axisLabel": "",
+                            "axisPlacement": "auto",
+                            "barAlignment": 0,
+                            "drawStyle": "line",
+                            "fillOpacity": 10,
+                            "gradientMode": "none",
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "vis": false
+                            },
+                            "lineInterpolation": "linear",
+                            "lineWidth": 2,
+                            "pointSize": 5,
+                            "scaleDistribution": {
+                                "type": "linear"
+                            },
+                            "showPoints": "never",
+                            "spanNulls": false,
+                            "stacking": {
+                                "group": "A",
+                                "mode": "none"
+                            },
+                            "thresholdsStyle": {
+                                "mode": "off"
+                            }
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "yellow",
+                                    "value": 5
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 10
+                                }
+                            ]
+                        },
+                        "unit": "s"
+                    }
+                },
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 12,
+                    "y": 0
+                }
+            },
+            {
+                "id": 3,
+                "title": "Token Throughput",
+                "type": "timeseries",
+                "targets": [
+                    {
+                        "expr": "rag_token_throughput_tokens_per_second",
+                        "legendFormat": "{{model_name}} - {{operation}}"
+                    }
+                ],
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "axisLabel": "",
+                            "axisPlacement": "auto",
+                            "barAlignment": 0,
+                            "drawStyle": "line",
+                            "fillOpacity": 10,
+                            "gradientMode": "none",
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "vis": false
+                            },
+                            "lineInterpolation": "linear",
+                            "lineWidth": 1,
+                            "pointSize": 5,
+                            "scaleDistribution": {
+                                "type": "linear"
+                            },
+                            "showPoints": "never",
+                            "spanNulls": false,
+                            "stacking": {
+                                "group": "A",
+                                "mode": "none"
+                            },
+                            "thresholdsStyle": {
+                                "mode": "off"
+                            }
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        },
+                        "unit": "short"
+                    }
+                },
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 0,
+                    "y": 8
+                }
+            },
+            {
+                "id": 4,
+                "title": "Embedding Generation Duration",
+                "type": "timeseries",
+                "targets": [
+                    {
+                        "expr": "histogram_quantile(0.95, rate(rag_embedding_generation_duration_seconds_bucket[5m]))",
+                        "legendFormat": "95th percentile"
+                    },
+                    {
+                        "expr": "histogram_quantile(0.50, rate(rag_embedding_generation_duration_seconds_bucket[5m]))",
+                        "legendFormat": "50th percentile"
+                    }
+                ],
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "axisLabel": "",
+                            "axisPlacement": "auto",
+                            "barAlignment": 0,
+                            "drawStyle": "line",
+                            "fillOpacity": 10,
+                            "gradientMode": "none",
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "vis": false
+                            },
+                            "lineInterpolation": "linear",
+                            "lineWidth": 2,
+                            "pointSize": 5,
+                            "scaleDistribution": {
+                                "type": "linear"
+                            },
+                            "showPoints": "never",
+                            "spanNulls": false,
+                            "stacking": {
+                                "group": "A",
+                                "mode": "none"
+                            },
+                            "thresholdsStyle": {
+                                "mode": "off"
+                            }
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "yellow",
+                                    "value": 30
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 60
+                                }
+                            ]
+                        },
+                        "unit": "s"
+                    }
+                },
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 12,
+                    "y": 8
+                }
+            },
+            {
+                "id": 5,
+                "title": "API Request Duration",
+                "type": "timeseries",
+                "targets": [
+                    {
+                        "expr": "histogram_quantile(0.95, rate(rag_api_request_duration_seconds_bucket[5m]))",
+                        "legendFormat": "95th percentile"
+                    },
+                    {
+                        "expr": "histogram_quantile(0.50, rate(rag_api_request_duration_seconds_bucket[5m]))",
+                        "legendFormat": "50th percentile"
+                    }
+                ],
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "axisLabel": "",
+                            "axisPlacement": "auto",
+                            "barAlignment": 0,
+                            "drawStyle": "line",
+                            "fillOpacity": 10,
+                            "gradientMode": "none",
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "vis": false
+                            },
+                            "lineInterpolation": "linear",
+                            "lineWidth": 2,
+                            "pointSize": 5,
+                            "scaleDistribution": {
+                                "type": "linear"
+                            },
+                            "showPoints": "never",
+                            "spanNulls": false,
+                            "stacking": {
+                                "group": "A",
+                                "mode": "none"
+                            },
+                            "thresholdsStyle": {
+                                "mode": "off"
+                            }
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "yellow",
+                                    "value": 1
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 5
+                                }
+                            ]
+                        },
+                        "unit": "s"
+                    }
+                },
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 0,
+                    "y": 16
+                }
+            },
+            {
+                "id": 6,
+                "title": "Token Generation Duration",
+                "type": "timeseries",
+                "targets": [
+                    {
+                        "expr": "histogram_quantile(0.95, rate(rag_token_generation_duration_seconds_bucket[5m]))",
+                        "legendFormat": "95th percentile"
+                    },
+                    {
+                        "expr": "histogram_quantile(0.50, rate(rag_token_generation_duration_seconds_bucket[5m]))",
+                        "legendFormat": "50th percentile"
+                    }
+                ],
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "axisLabel": "",
+                            "axisPlacement": "auto",
+                            "barAlignment": 0,
+                            "drawStyle": "line",
+                            "fillOpacity": 10,
+                            "gradientMode": "none",
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "vis": false
+                            },
+                            "lineInterpolation": "linear",
+                            "lineWidth": 2,
+                            "pointSize": 5,
+                            "scaleDistribution": {
+                                "type": "linear"
+                            },
+                            "showPoints": "never",
+                            "spanNulls": false,
+                            "stacking": {
+                                "group": "A",
+                                "mode": "none"
+                            },
+                            "thresholdsStyle": {
+                                "mode": "off"
+                            }
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "yellow",
+                                    "value": 10
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 30
+                                }
+                            ]
+                        },
+                        "unit": "s"
+                    }
+                },
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 12,
+                    "y": 16
+                }
+            },
+            {
+                "id": 7,
+                "title": "Error Rates by Operation",
+                "type": "timeseries",
+                "targets": [
+                    {
+                        "expr": "rate(rag_document_processing_total{status=\"error\"}[5m])",
+                        "legendFormat": "Document Processing Errors"
+                    },
+                    {
+                        "expr": "rate(rag_qa_queries_total{status=\"error\"}[5m])",
+                        "legendFormat": "QA Query Errors"
+                    },
+                    {
+                        "expr": "rate(rag_api_requests_total{status_code=~\"5..\"}[5m])",
+                        "legendFormat": "API 5xx Errors"
+                    }
+                ],
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "axisLabel": "",
+                            "axisPlacement": "auto",
+                            "barAlignment": 0,
+                            "drawStyle": "line",
+                            "fillOpacity": 10,
+                            "gradientMode": "none",
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "vis": false
+                            },
+                            "lineInterpolation": "linear",
+                            "lineWidth": 1,
+                            "pointSize": 5,
+                            "scaleDistribution": {
+                                "type": "linear"
+                            },
+                            "showPoints": "never",
+                            "spanNulls": false,
+                            "stacking": {
+                                "group": "A",
+                                "mode": "none"
+                            },
+                            "thresholdsStyle": {
+                                "mode": "off"
+                            }
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        },
+                        "unit": "reqps"
+                    }
+                },
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 0,
+                    "y": 24
+                }
+            },
+            {
+                "id": 8,
+                "title": "Queue Depth Analysis",
+                "type": "timeseries",
+                "targets": [
+                    {
+                        "expr": "rag_queue_size",
+                        "legendFormat": "{{queue_name}}"
+                    }
+                ],
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "axisLabel": "",
+                            "axisPlacement": "auto",
+                            "barAlignment": 0,
+                            "drawStyle": "line",
+                            "fillOpacity": 10,
+                            "gradientMode": "none",
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "vis": false
+                            },
+                            "lineInterpolation": "linear",
+                            "lineWidth": 1,
+                            "pointSize": 5,
+                            "scaleDistribution": {
+                                "type": "linear"
+                            },
+                            "showPoints": "never",
+                            "spanNulls": false,
+                            "stacking": {
+                                "group": "A",
+                                "mode": "none"
+                            },
+                            "thresholdsStyle": {
+                                "mode": "off"
+                            }
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "yellow",
+                                    "value": 100
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 500
+                                }
+                            ]
+                        },
+                        "unit": "short"
+                    }
+                },
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 12,
+                    "y": 24
+                }
+            },
+            {
+                "id": 9,
+                "title": "Latency Distribution (Heatmap)",
+                "type": "heatmap",
+                "targets": [
+                    {
+                        "expr": "sum(rate(rag_qa_query_duration_seconds_bucket[5m])) by (le)",
+                        "legendFormat": "{{le}}"
+                    }
+                ],
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "vis": false
+                            }
+                        },
+                        "mappings": []
+                    }
+                },
+                "gridPos": {
+                    "h": 8,
+                    "w": 24,
+                    "x": 0,
+                    "y": 32
+                }
+            }
+        ],
+        "time": {
+            "from": "now-1h",
+            "to": "now"
+        },
+        "timepicker": {},
+        "templating": {
+            "list": []
+        },
+        "annotations": {
+            "list": []
+        },
+        "refresh": "5s",
+        "schemaVersion": 27,
+        "version": 0,
+        "links": [],
+        "gnetId": null,
+        "graphTooltip": 0
+    }
+}

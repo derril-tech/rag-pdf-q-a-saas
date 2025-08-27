@@ -1,0 +1,119 @@
+# Created automatically by Cursor AI (2025-01-27)
+
+version: '3.8'
+
+services:
+  # Database
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: rag-pdf-qa-postgres
+    environment:
+      POSTGRES_DB: rag_pdf_qa
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user -d rag_pdf_qa" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Cache and Message Queue
+  redis:
+    image: redis:7-alpine
+    container_name: rag-pdf-qa-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Message Queue
+  nats:
+    image: nats:2-alpine
+    container_name: rag-pdf-qa-nats
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    command: nats-server --jetstream --http_port 8222
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8222/healthz" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Object Storage (S3-compatible)
+  minio:
+    image: minio/minio:latest
+    container_name: rag-pdf-qa-minio
+    environment:
+      MINIO_ROOT_USER: your-access-key
+      MINIO_ROOT_PASSWORD: your-secret-key
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Virus Scanner
+  clamav:
+    image: clamav/clamav:latest
+    container_name: rag-pdf-qa-clamav
+    ports:
+      - "3310:3310"
+    volumes:
+      - clamav_data:/var/lib/clamav
+    command: clamd --foreground
+    healthcheck:
+      test: [ "CMD", "echo", "PING", "|", "nc", "localhost", "3310" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Database Management
+  adminer:
+    image: adminer:latest
+    container_name: rag-pdf-qa-adminer
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+    depends_on:
+      - postgres
+
+  # Redis Management
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: rag-pdf-qa-redis-commander
+    ports:
+      - "8081:8081"
+    environment:
+      REDIS_HOSTS: local:redis:6379
+    depends_on:
+      - redis
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+  clamav_data:
+
+
+networks:
+  default:
+    name: rag-pdf-qa-network
